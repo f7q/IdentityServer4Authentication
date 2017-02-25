@@ -38,9 +38,20 @@ namespace IdentityServer4Authentication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            var db = Configuration.GetConnectionString("db");
+            if (db.Equals("sqlite"))
+            {
+                // Add framework services.
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            }
+            if (db.Equals("sqlserver"))
+            {
+                // Add framework services.
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -56,8 +67,8 @@ namespace IdentityServer4Authentication
             services.AddSingleton<IClientStore, CustomClientStore>();
 
             services.AddIdentityServer()
-                // .AddTemporarySigningCredential() // Can be used for testing until a real cert is available
-                .AddSigningCredential(new X509Certificate2(Path.Combine(".", "certs", "IdentityServer4Auth.pfx")))
+                .AddTemporarySigningCredential() // Can be used for testing until a real cert is available
+                // .AddSigningCredential(new X509Certificate2(Path.Combine(".", "certs", "IdentityServer4Auth.pfx")))
                 .AddInMemoryApiResources(MyApiResourceProvider.GetAllResources())
                 .AddAspNetIdentity<ApplicationUser>();
         }

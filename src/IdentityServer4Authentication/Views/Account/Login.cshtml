@@ -17,10 +17,10 @@
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Email" class="col-md-2 control-label"></label>
+                    <label asp-for="NormalizedUserName" class="col-md-2 control-label">UserName</label>
                     <div class="col-md-10">
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <input asp-for="NormalizedUserName" class="form-control" />
+                        <span asp-validation-for="NormalizedUserName" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -64,8 +64,13 @@
                 {
                     <div>
                         <p>
-                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532715" data-toggle="tooltip" title="例えばGoogle IDとか">this article</a>
                             for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                    <div>
+                        <p>
+                            <button type="button" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal">他のログインサービスでログイン</button>
                         </p>
                     </div>
                 }
@@ -86,7 +91,27 @@
         </section>
     </div>
 </div>
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
 
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">外部の認証・認可サービスを実装してください。</h4>
+            </div>
+            <div class="modal-body">
+                <p>Some text in the modal.</p>
+                <p>Twitter IDとか.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

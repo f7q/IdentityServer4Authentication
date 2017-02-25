@@ -9,6 +9,10 @@ namespace IdentityServer4Authentication.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "AccountName")]
+        public string AccountName { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
