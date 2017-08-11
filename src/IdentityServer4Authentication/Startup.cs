@@ -18,6 +18,11 @@ using IdentityServer4.Stores;
 using IdentityServer4Authentication.Stores;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace IdentityServer4Authentication
 {
@@ -71,6 +76,27 @@ namespace IdentityServer4Authentication
                 // .AddSigningCredential(new X509Certificate2(Path.Combine(".", "certs", "IdentityServer4Auth.pfx")))
                 .AddInMemoryApiResources(MyApiResourceProvider.GetAllResources())
                 .AddAspNetIdentity<ApplicationUser>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Geo Search API"
+                });
+                c.DocInclusionPredicate((name, apiDescription) =>
+                {
+                    var controllerActionDescription = apiDescription.ActionDescriptor as ControllerActionDescriptor;
+
+                    // コントローラ名に Api が含まれていたらSwaggerの対象にする
+                    return controllerActionDescription?.ControllerName.Contains("Api") ?? false;
+                });
+            });
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                //options.IncludeXmlComments(pathToDoc);
+                options.DescribeAllEnumsAsStrings();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,6 +133,12 @@ namespace IdentityServer4Authentication
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
         }
 
