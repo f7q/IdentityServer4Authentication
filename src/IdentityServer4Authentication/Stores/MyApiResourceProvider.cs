@@ -24,6 +24,10 @@ namespace IdentityServer4Authentication.Stores
                 new ApiResource(
                     "myAPIs",                                       // Api resource name
                     "My API Set #1",                                // Display name
+                    new[] { JwtClaimTypes.Name, JwtClaimTypes.Role, "office" }), // Claims to be included in access token
+                new ApiResource(
+                    "api1",                                       // Api resource name
+                    "Idsrv API Set #1",                                // Display name
                     new[] { JwtClaimTypes.Name, JwtClaimTypes.Role, "office" }) // Claims to be included in access token
             };
         }        

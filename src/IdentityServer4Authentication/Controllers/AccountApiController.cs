@@ -17,6 +17,7 @@ namespace IdentityServer4Authentication.Controllers
 {
     [Produces("application/json")]
     [Route("api/[controller]")]
+    [Authorize]
     public class AccountApiController : Controller
     {
         [HttpGet]

@@ -21,6 +21,20 @@ namespace IdentityServer4Authentication.Stores
                 {
                     "myAPIs"
                 }
+            },
+            // resource owner password grant client
+            new Client
+            {
+                ClientId = "ro.client",
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                AccessTokenLifetime = 60 * 60,
+                RequireClientSecret = true,
+
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+                AllowedScopes = { "api1" }
             }
         };
 

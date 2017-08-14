@@ -24,6 +24,9 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
+using System.IdentityModel.Tokens.Jwt;
+using IdentityServer4.AccessTokenValidation;
+
 namespace IdentityServer4Authentication
 {
     public class Startup
@@ -125,6 +128,23 @@ namespace IdentityServer4Authentication
 
             // Note that UseIdentityServer must come after UseIdentity in the pipeline
             app.UseIdentityServer();
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            IdentityServerAuthenticationOptions identityServerValidationOptions = new IdentityServerAuthenticationOptions
+            {
+                Authority = "http://localhost:5000/",
+                AllowedScopes = new List<string> { "api1" },
+                //ApiSecret = "secret",
+                //ApiName = "dataEventRecords",
+                AutomaticAuthenticate = true,
+                //SupportedTokens = SupportedTokens.Both,
+                // TokenRetriever = _tokenRetriever,
+                // required if you want to return a 403 and not a 401 for forbidden responses
+                //AutomaticChallenge = true,
+                RequireHttpsMetadata = false,    // Set only for development scenarios - not in production
+            };
+
+            app.UseIdentityServerAuthentication(identityServerValidationOptions);
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 

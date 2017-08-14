@@ -50,6 +50,7 @@
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="1.0.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.0.0" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="1.0.5" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
