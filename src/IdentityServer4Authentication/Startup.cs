@@ -93,6 +93,21 @@ namespace IdentityServer4Authentication
                     // コントローラ名に Api が含まれていたらSwaggerの対象にする
                     return controllerActionDescription?.ControllerName.Contains("Api") ?? false;
                 });
+                // Define the OAuth2.0 scheme that's in use (i.e. Implicit Flow)
+                c.AddSecurityDefinition("oauth2", new OAuth2Scheme
+                {
+                    Type = "oauth2",
+                    //Flow = "implicit",
+                    Flow = "accessCode",
+                    AuthorizationUrl = "http://localhost:5000/connect/authorize",
+                    //"http://petstore.swagger.io/oauth/dialog",
+                    Scopes = new Dictionary<string, string>
+                    {
+                        //{ "readAccess", "Access read operations" },
+                        //{ "writeAccess", "Access write operations" }
+                        { "api1", "Access write operations" }
+                    }
+                });
             });
 
             services.ConfigureSwaggerGen(options =>
@@ -159,6 +174,7 @@ namespace IdentityServer4Authentication
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                //c.ConfigureOAuth2("ro.client", "secret", "", "");
             });
         }
 
