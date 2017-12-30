@@ -60,6 +60,12 @@ namespace IdentityServer4Authentication
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             }
+            if (db.Equals("psql"))
+            {
+                // Add framework services.
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -75,10 +81,21 @@ namespace IdentityServer4Authentication
             services.AddSingleton<IClientStore, CustomClientStore>();
 
             services.AddIdentityServer()
-                .AddTemporarySigningCredential() // Can be used for testing until a real cert is available
+                //.AddTemporarySigningCredential() // Can be used for testing until a real cert is available
                 // .AddSigningCredential(new X509Certificate2(Path.Combine(".", "certs", "IdentityServer4Auth.pfx")))
                 .AddInMemoryApiResources(MyApiResourceProvider.GetAllResources())
                 .AddAspNetIdentity<ApplicationUser>();
+
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+
+                    options.ApiName = "api1";
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
@@ -115,6 +132,14 @@ namespace IdentityServer4Authentication
                 //options.IncludeXmlComments(pathToDoc);
                 options.DescribeAllEnumsAsStrings();
             });
+
+            // データベース作成
+            using (var opt = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var db2 = opt.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                //db2.Database.Migrate();
+                db2.Database.EnsureCreated();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -139,11 +164,12 @@ namespace IdentityServer4Authentication
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
+            app.UseAuthentication();
+            //app.UseIdentity();
 
             // Note that UseIdentityServer must come after UseIdentity in the pipeline
             app.UseIdentityServer();
-
+            /*
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             IdentityServerAuthenticationOptions identityServerValidationOptions = new IdentityServerAuthenticationOptions
             {
@@ -160,7 +186,7 @@ namespace IdentityServer4Authentication
             };
 
             app.UseIdentityServerAuthentication(identityServerValidationOptions);
-
+            */
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
