@@ -86,16 +86,6 @@ namespace IdentityServer4Authentication
                 .AddInMemoryApiResources(MyApiResourceProvider.GetAllResources())
                 .AddAspNetIdentity<ApplicationUser>();
 
-
-            services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "http://localhost:5000";
-                    options.RequireHttpsMetadata = false;
-
-                    options.ApiName = "api1";
-                });
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
@@ -189,12 +179,7 @@ namespace IdentityServer4Authentication
             */
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
