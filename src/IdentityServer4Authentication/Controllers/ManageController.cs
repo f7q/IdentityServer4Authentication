@@ -292,7 +292,8 @@ namespace IdentityServer4Authentication.Controllers
             ViewData["ShowRemoveButton"] = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
             {
-                CurrentLogins = userLogins
+                CurrentLogins = userLogins,
+                OtherLogins = otherLogins
             });
         }
 
