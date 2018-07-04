@@ -37,5 +37,9 @@ namespace IdentityServer4Authentication.Models.AccountViewModels
         [Required]
         [Display(Name = "Office Number")]
         public int OfficeNumber { get; set; }
+
+        [Required]
+        [Display(Name = "Grup Name")]
+        public string Group { get; set; }
     }
 }

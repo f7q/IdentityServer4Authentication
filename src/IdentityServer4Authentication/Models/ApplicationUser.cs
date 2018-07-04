@@ -10,5 +10,12 @@ namespace IdentityServer4Authentication.Models
     public class ApplicationUser : IdentityUser
     {
         public virtual int OfficeNumber { get; set; }
+        public virtual ICollection<Group> Groups { get; set; }
+    }
+
+    public class Group
+    {
+        public virtual string Id { get; set; }
+        public virtual string Name { get; set; }
     }
 }

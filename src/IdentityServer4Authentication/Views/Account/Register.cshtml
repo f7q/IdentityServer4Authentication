@@ -45,6 +45,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label asp-for="Group" class="col-md-2 control-label"></label>
+        <div class="col-md-10">
+            <input asp-for="Group" class="form-control" />
+            <span asp-validation-for="Group" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
         <label asp-for="IsManager" class="col-md-2 control-label"></label>
         <div class="col-md-10">
             <input asp-for="IsManager" class="form-control" />

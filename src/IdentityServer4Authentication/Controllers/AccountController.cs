@@ -121,6 +121,10 @@ namespace IdentityServer4Authentication.Controllers
                     var officeClaim = new Claim("office", user.OfficeNumber.ToString(), ClaimValueTypes.Integer);
                     await _userManager.AddClaimAsync(user, officeClaim);
 
+                    // Group List
+                    var groupClaim = new Claim("group", user.Groups.FirstOrDefault().ToString(), ClaimValueTypes.String);
+                    await _userManager.AddClaimAsync(user, groupClaim);
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     return RedirectToLocal(returnUrl);
