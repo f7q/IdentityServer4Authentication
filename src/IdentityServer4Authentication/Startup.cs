@@ -47,24 +47,23 @@ namespace IdentityServer4Authentication
         public void ConfigureServices(IServiceCollection services)
         {
             var db = Configuration.GetConnectionString("db");
+            var defaultConnection = Configuration.GetConnectionString("DefaultConnection");
             if (db.Equals("sqlite"))
             {
-                // Add framework services.
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
-
+                    options.UseSqlite(defaultConnection));
             }
+
             if (db.Equals("sqlserver"))
             {
-                // Add framework services.
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseSqlServer(defaultConnection));
             }
+
             if (db.Equals("psql"))
             {
-                // Add framework services.
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseNpgsql(defaultConnection));
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -122,14 +121,6 @@ namespace IdentityServer4Authentication
                 //options.IncludeXmlComments(pathToDoc);
                 options.DescribeAllEnumsAsStrings();
             });
-
-            // データベース作成
-            using (var opt = services.BuildServiceProvider().GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                var db2 = opt.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                //db2.Database.Migrate();
-                db2.Database.EnsureCreated();
-            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -139,7 +130,7 @@ namespace IdentityServer4Authentication
             loggerFactory.AddDebug();
 
             // Seed database
-            InitializeRoles(roleManager).Wait();
+            Initialize(app).Wait();
 
             if (env.IsDevelopment())
             {
@@ -150,6 +141,7 @@ namespace IdentityServer4Authentication
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
             }
 
             app.UseStaticFiles();
@@ -189,18 +181,28 @@ namespace IdentityServer4Authentication
             });
         }
 
-        // Initialize some test roles. In the real world, these would be setup explicitly by a role manager
-        private string[] roles = new[] { "User", "Manager", "Administrator" };
-        private async Task InitializeRoles(RoleManager<IdentityRole> roleManager)
+        private async Task Initialize(IApplicationBuilder app)
         {
-            foreach (var role in roles)
+            // データベース作成
+            using (var opt = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                if (!await roleManager.RoleExistsAsync(role))
+                var db2 = opt.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                //db2.Database.Migrate();
+                db2.Database.EnsureCreated();
+
+
+                var roleManager = opt.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                // Initialize some test roles. In the real world, these would be setup explicitly by a role manager
+                string[] roles = new[] { "User", "Manager", "Administrator" };
+                foreach (var role in roles)
                 {
-                    var newRole = new IdentityRole(role);
-                    await roleManager.CreateAsync(newRole);
-                    // In the real world, there might be claims associated with roles
-                    // await roleManager.AddClaimAsync(newRole, new Claim("foo", "bar"))
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        var newRole = new IdentityRole(role);
+                        await roleManager.CreateAsync(newRole);
+                        // In the real world, there might be claims associated with roles
+                        // await roleManager.AddClaimAsync(newRole, new Claim("foo", "bar"))
+                    }
                 }
             }
         }
