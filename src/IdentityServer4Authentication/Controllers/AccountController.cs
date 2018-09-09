@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using IdentityServer4Authentication.Models;
 using IdentityServer4Authentication.Models.AccountViewModels;
 using IdentityServer4Authentication.Services;
+using IdentityServer4Authentication.Resources;
 
 namespace IdentityServer4Authentication.Controllers
 {
@@ -76,6 +77,14 @@ namespace IdentityServer4Authentication.Controllers
                 }
                 else
                 {
+                    var user = await _userManager.FindByNameAsync(model.NormalizedUserName.ToUpper());
+                    var ok = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if (!ok)
+                    {
+                        ModelState.AddModelError(string.Empty, LocalizedIdentityErrorMessages.PasswordMismatch);
+                        return View(model);
+                    }
+
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View(model);
                 }

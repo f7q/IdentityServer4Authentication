@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using IdentityServer4.Stores;
 using IdentityServer4Authentication.Stores;
+using IdentityServer4Authentication.Resources;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using Swashbuckle.AspNetCore.Swagger;
@@ -26,6 +27,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 using System.IdentityModel.Tokens.Jwt;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Localization;
 
 namespace IdentityServer4Authentication
 {
@@ -68,9 +70,16 @@ namespace IdentityServer4Authentication
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddErrorDescriber<IdentityErrorDescriberJP>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc(o =>
+            {
+                o.ModelMetadataDetailsProviders.Add(
+                    new ValidationMetadataProviderJp(
+                        "IdentityServer4Authentication.Resources.DefaultValidationResource",
+                        typeof(DefaultValidationResource)));
+            });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -143,6 +152,11 @@ namespace IdentityServer4Authentication
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ja-JP")
+            });
 
             app.UseStaticFiles();
 
