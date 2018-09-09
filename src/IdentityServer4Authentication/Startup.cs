@@ -73,13 +73,13 @@ namespace IdentityServer4Authentication
                 .AddErrorDescriber<IdentityErrorDescriberJP>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc(o =>
+            services.AddMvc(/*o =>
             {
                 o.ModelMetadataDetailsProviders.Add(
                     new ValidationMetadataProviderJp(
                         "IdentityServer4Authentication.Resources.DefaultValidationResource",
                         typeof(DefaultValidationResource)));
-            });
+            }*/);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -89,10 +89,20 @@ namespace IdentityServer4Authentication
             services.AddSingleton<IClientStore, CustomClientStore>();
 
             services.AddIdentityServer()
-                //.AddTemporarySigningCredential() // Can be used for testing until a real cert is available
+                .AddDeveloperSigningCredential() // Can be used for testing until a real cert is available
                 // .AddSigningCredential(new X509Certificate2(Path.Combine(".", "certs", "IdentityServer4Auth.pfx")))
                 .AddInMemoryApiResources(MyApiResourceProvider.GetAllResources())
                 .AddAspNetIdentity<ApplicationUser>();
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = "http://localhost:5000";
+                    options.RequireHttpsMetadata = false;
+
+                    options.ApiSecret = "secret";
+                    options.ApiName = "api1";
+                });
 
             services.AddSwaggerGen(c =>
             {

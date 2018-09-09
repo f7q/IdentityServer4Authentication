@@ -29,6 +29,7 @@ namespace IdentityServer4Authentication.Stores
                 AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                 AccessTokenLifetime = 60 * 60,
                 RequireClientSecret = true,
+                AllowOfflineAccess = true,
 
                 ClientSecrets =
                 {

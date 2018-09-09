@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4Authentication", "src\IdentityServer4Authentication\IdentityServer4Authentication.csproj", "{B2CD2AD8-87E6-4DEC-83DF-21810F91B606}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityClient", "src\IdentityClient\IdentityClient.csproj", "{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,11 +21,19 @@ Global
 		{B2CD2AD8-87E6-4DEC-83DF-21810F91B606}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2CD2AD8-87E6-4DEC-83DF-21810F91B606}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2CD2AD8-87E6-4DEC-83DF-21810F91B606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B2CD2AD8-87E6-4DEC-83DF-21810F91B606} = {CCF34A80-0E06-4A1E-9094-1A2A74B48934}
+		{B6FCC3FC-83A1-44B8-AD1A-BE75C0D5D3D0} = {CCF34A80-0E06-4A1E-9094-1A2A74B48934}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {780D45E7-83D8-4445-965C-A01ECF172759}
 	EndGlobalSection
 EndGlobal
