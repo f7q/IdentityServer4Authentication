@@ -12,6 +12,7 @@ using IdentityServer4Authentication.Models;
 using IdentityServer4Authentication.Models.AccountViewModels;
 using IdentityServer4Authentication.Services;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.Extensions.Options;
 
 namespace IdentityServer4Authentication.Controllers
 {
@@ -21,9 +22,15 @@ namespace IdentityServer4Authentication.Controllers
     public class AccountApiController : ControllerBase
     {
         private readonly Dictionary<string, string> list;
-        public AccountApiController()
+        private readonly IOptions<IdentityOptions> identityOptions;
+        private readonly IOptions<IdentityServerAuthenticationOptions> identityServerAuthenticationOptions;
+        public AccountApiController(
+            IOptions<IdentityOptions> identityOptions,
+            IOptions<IdentityServerAuthenticationOptions> identityServerAuthenticationOptions)
         {
             list = new Dictionary<string, string>();
+            this.identityOptions = identityOptions;
+            this.identityServerAuthenticationOptions = identityServerAuthenticationOptions;
         }
 
         [HttpGet]
@@ -31,6 +38,20 @@ namespace IdentityServer4Authentication.Controllers
         {
             return new string[] { "Important Info for people in low offices #1",
                 "Important Info for people in low offices #2" };
+        }
+
+        [AllowAnonymous]
+        [HttpGet("IdentityOptions")]
+        public IOptions<IdentityOptions> GetIdentityOptions()
+        {
+            return identityOptions;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("IdentityServerAuthenticationOptions")]
+        public IOptions<IdentityServerAuthenticationOptions> GetIdentityServerAuthenticationOptions()
+        {
+            return identityServerAuthenticationOptions;
         }
 
         [HttpGet("All")]

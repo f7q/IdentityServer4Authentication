@@ -48,6 +48,9 @@ namespace IdentityServer4Authentication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.Configure<IdentityOptions>(Configuration);
+            services.Configure<IdentityServerAuthenticationOptions>(Configuration);
             var db = Configuration.GetConnectionString("db");
             var defaultConnection = Configuration.GetConnectionString("DefaultConnection");
             if (db.Equals("sqlite"))
@@ -68,7 +71,8 @@ namespace IdentityServer4Authentication
                     options.UseNpgsql(defaultConnection));
             }
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(
+                options => Configuration.GetSection("IdentityOptions").Bind(options))
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddErrorDescriber<IdentityErrorDescriberJP>()
                 .AddDefaultTokenProviders();
@@ -96,13 +100,7 @@ namespace IdentityServer4Authentication
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "http://localhost:5000";
-                    options.RequireHttpsMetadata = false;
-
-                    options.ApiSecret = "secret";
-                    options.ApiName = "api1";
-                });
+                Configuration.GetSection("IdentityServerAuthenticationOptions").Bind(options));
 
             services.AddSwaggerGen(c =>
             {
@@ -176,7 +174,6 @@ namespace IdentityServer4Authentication
             // Note that UseIdentityServer must come after UseIdentity in the pipeline
             app.UseIdentityServer();
             /*
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             IdentityServerAuthenticationOptions identityServerValidationOptions = new IdentityServerAuthenticationOptions
             {
                 Authority = "http://localhost:5000/",

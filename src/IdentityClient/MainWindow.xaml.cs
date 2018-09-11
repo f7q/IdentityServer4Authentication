@@ -45,7 +45,7 @@ namespace IdentityClient
 
             if (tokenResponse.IsError)
             {
-                Console.WriteLine(tokenResponse.Error);
+                this.txt_box.Text = tokenResponse.Error;
                 return;
             }
 
